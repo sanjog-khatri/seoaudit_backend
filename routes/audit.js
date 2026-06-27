@@ -31,7 +31,11 @@ router.post('/audit', async (req, res) => {
     const sd = structuredData($);
 
     // Calculate score
-    const scoreData = calculateOverallScore(checkResults, pageSpeedData.mobile?.seoScore || 0);
+    const scoreData = calculateOverallScore(
+      checkResults, 
+      pageSpeedData.mobile?.seoScore || pageSpeedData.desktop?.seoScore || 70,
+      sd
+    );
 
     const response = {
       url,

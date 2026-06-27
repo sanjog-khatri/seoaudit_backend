@@ -8,22 +8,27 @@ const calculateCategoryScore = (checks) => {
     if (typeof check === 'object' && check.status) {
       count++;
       if (check.status === 'pass') total += 1;
-      else if (check.status === 'warning') total += 0.5;
+      else if (check.status === 'warning') total += 0.7; // Less harsh on warnings
       // fail = 0
+    } else if (check.status === 'info') {
+      count++;
+      total += 0.8; // Info items are mostly positive
     }
   });
   
-  return count > 0 ? Math.round((total / count) * 100) : 0;
+  return count > 0 ? Math.round((total / count) * 100) : 70;
 };
 
-const calculateOverallScore = (results, pagespeedSeo) => {
+const calculateOverallScore = (results, pagespeedSeo, structuredData) => {
+  const sdScore = structuredData?.found ? 90 : 40;
+
   const scores = {
     meta: calculateCategoryScore(results.meta),
     headings: calculateCategoryScore(results.headings),
     images: calculateCategoryScore(results.images),
-    structuredData: 0, // to be added
+    structuredData: sdScore,
     technical: calculateCategoryScore(results.technical),
-    pagespeed: pagespeedSeo || 0
+    pagespeed: pagespeedSeo || 75
   };
 
   let overall = 0;
@@ -35,9 +40,9 @@ const calculateOverallScore = (results, pagespeedSeo) => {
   
   let grade = 'F';
   if (score >= 90) grade = 'A';
-  else if (score >= 75) grade = 'B';
-  else if (score >= 60) grade = 'C';
-  else if (score >= 40) grade = 'D';
+  else if (score >= 80) grade = 'B';
+  else if (score >= 65) grade = 'C';
+  else if (score >= 50) grade = 'D';
 
   return {
     score,

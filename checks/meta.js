@@ -1,34 +1,35 @@
 const { pass, warn, fail } = require('../utils/formatResult');
 const { IDEAL_TITLE_MIN, IDEAL_TITLE_MAX, IDEAL_META_DESC_MIN, IDEAL_META_DESC_MAX } = require('../config');
 
+// Replace the checkTitle and checkMetaDescription functions
 const checkTitle = ($) => {
   const title = $('title').first().text().trim();
   if (!title) {
-    return fail('No title tag found', 'Add a descriptive <title> tag');
+    return fail('No title tag found', 'Add a unique, keyword-rich <title> tag (50-60 characters)');
   }
   const length = title.length;
-  if (length < IDEAL_TITLE_MIN) {
-    return warn(`Title is too short (${length} chars)`, `Aim for ${IDEAL_TITLE_MIN}-${IDEAL_TITLE_MAX} characters`);
+  if (length < 50) {
+    return warn(`Title is too short (${length} chars)`, 'Make it 50-60 characters with main keywords');
   }
-  if (length > IDEAL_TITLE_MAX) {
-    return warn(`Title is too long (${length} chars)`, `Aim for ${IDEAL_TITLE_MIN}-${IDEAL_TITLE_MAX} characters`);
+  if (length > 60) {
+    return warn(`Title is too long (${length} chars)`, 'Shorten to 50-60 characters to avoid truncation in search results');
   }
-  return pass(`Title is good (${length} chars): "${title}"`);
+  return pass(`Great title (${length} chars): "${title}"`);
 };
 
 const checkMetaDescription = ($) => {
-  const metaDesc = $('meta[name="description"]').attr('content') || '';
+  const metaDesc = $('meta[name="description"]').attr('content')?.trim() || '';
   if (!metaDesc) {
-    return fail('No meta description found', 'Add a meta description tag');
+    return fail('No meta description found', 'Add a compelling meta description (150-160 characters)');
   }
   const length = metaDesc.length;
-  if (length < IDEAL_META_DESC_MIN) {
-    return warn(`Meta description too short (${length} chars)`, `Aim for ${IDEAL_META_DESC_MIN}-${IDEAL_META_DESC_MAX} characters`);
+  if (length < 120) {
+    return warn(`Meta description too short (${length} chars)`, 'Expand to 150-160 characters for better CTR');
   }
-  if (length > IDEAL_META_DESC_MAX) {
-    return warn(`Meta description too long (${length} chars)`, `Aim for ${IDEAL_META_DESC_MIN}-${IDEAL_META_DESC_MAX} characters`);
+  if (length > 160) {
+    return warn(`Meta description too long (${length} chars)`, 'Shorten to ~155 characters to prevent truncation');
   }
-  return pass(`Meta description is good (${length} chars)`);
+  return pass(`Good meta description (${length} chars)`);
 };
 
 const checkOpenGraph = ($) => {
