@@ -18,14 +18,19 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'"]
+      connectSrc: ["'self'", 'https:', 'http:']  // allow all HTTPS/HTTP APIs
     }
   },
   crossOriginEmbedderPolicy: false
 }));
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    'http://localhost:5173',           // local dev (Vite)
+    'http://localhost:3000',           // local dev (CRA)
+    'https://redline-frontend-orcin.vercel.app', // ACTUAL VERCEL FRONTEND URL
+    /\.vercel\.app$/                   //  ALL vercel.app subdomains (previews + production)
+  ],
   methods: ['GET', 'POST']
 }));
 

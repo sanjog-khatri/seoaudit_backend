@@ -40,7 +40,7 @@ router.post('/audit', async (req, res) => {
     );
 
     // Run checks
-    const checkResults = await runAllChecks(html, url);
+    const checkResults = await runAllChecks(html, scrapeMeta.finalUrl || url);
 
     // PageSpeed with timeout
     const pageSpeedData = await withTimeout(
