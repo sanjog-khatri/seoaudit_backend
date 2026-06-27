@@ -5,7 +5,7 @@ const {
   checkCanonical, checkRobotsMeta, checkViewport 
 } = require('./meta');
 const { checkH1, checkH2s, checkH3s, checkHierarchy } = require('./headings');
-const { checkAltTexts, checkImageCount, checkLazyLoading } = require('./images');
+const { checkAltTexts, checkImageCount, checkLazyLoading, checkImageDimensions } = require('./images');
 const { 
   checkInternalLinks, checkExternalLinks, checkNoopener, 
   checkGenericAnchors, checkBrokenAnchors 
@@ -14,7 +14,7 @@ const { checkHttps, checkRobotsTxt, checkSitemap, checkWwwRedirect } = require('
 
 const runAllChecks = async (html, url) => {
   const $ = cheerio.load(html);
-  
+
   const meta = {
     title: checkTitle($),
     metaDescription: checkMetaDescription($),
@@ -35,7 +35,8 @@ const runAllChecks = async (html, url) => {
   const images = {
     altTexts: checkAltTexts($),
     count: checkImageCount($),
-    lazyLoading: checkLazyLoading($)
+    lazyLoading: checkLazyLoading($),
+    dimensions: checkImageDimensions($)
   };
 
   const links = {

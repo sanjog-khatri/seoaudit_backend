@@ -11,14 +11,21 @@ const CONSTANTS = {
   IDEAL_META_DESC_MIN: 150,
   IDEAL_META_DESC_MAX: 160,
   SCORE_WEIGHTS: {
-    meta: 25,
+    meta: 20,
     headings: 15,
     images: 15,
+    links: 10,
     structuredData: 15,
-    technical: 15,
+    technical: 10,
     pagespeed: 15
   }
 };
+
+// Verify weights sum to 100
+const totalWeight = Object.values(CONSTANTS.SCORE_WEIGHTS).reduce((a, b) => a + b, 0);
+if (totalWeight !== 100) {
+  console.error(`WARNING: SCORE_WEIGHTS sum to ${totalWeight}, not 100`);
+}
 
 module.exports = {
   PORT,

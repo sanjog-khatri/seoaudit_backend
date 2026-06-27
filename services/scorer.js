@@ -3,20 +3,18 @@ const { SCORE_WEIGHTS } = require('../config');
 const calculateCategoryScore = (checks) => {
   let total = 0;
   let count = 0;
-  
+
   Object.values(checks).forEach(check => {
     if (typeof check === 'object' && check.status) {
       count++;
       if (check.status === 'pass') total += 1;
-      else if (check.status === 'warning') total += 0.7; // Less harsh on warnings
+      else if (check.status === 'warning') total += 0.7;
+      else if (check.status === 'info') total += 0.8;
       // fail = 0
-    } else if (check.status === 'info') {
-      count++;
-      total += 0.8; // Info items are mostly positive
     }
   });
-  
-  return count > 0 ? Math.round((total / count) * 100) : 70;
+
+  return count > 0 ? Math.round((total / count) * 100) : 0;
 };
 
 const calculateOverallScore = (results, pagespeedSeo, structuredData) => {
@@ -26,6 +24,7 @@ const calculateOverallScore = (results, pagespeedSeo, structuredData) => {
     meta: calculateCategoryScore(results.meta),
     headings: calculateCategoryScore(results.headings),
     images: calculateCategoryScore(results.images),
+    links: calculateCategoryScore(results.links),
     structuredData: sdScore,
     technical: calculateCategoryScore(results.technical),
     pagespeed: pagespeedSeo || 75
@@ -33,11 +32,12 @@ const calculateOverallScore = (results, pagespeedSeo, structuredData) => {
 
   let overall = 0;
   Object.keys(SCORE_WEIGHTS).forEach(cat => {
-    overall += (scores[cat] / 100) * SCORE_WEIGHTS[cat];
+    const score = scores[cat] || 0;
+    overall += (score / 100) * SCORE_WEIGHTS[cat];
   });
 
   const score = Math.round(overall);
-  
+
   let grade = 'F';
   if (score >= 90) grade = 'A';
   else if (score >= 80) grade = 'B';

@@ -4,6 +4,10 @@ const normalizeUrl = (url) => {
   if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
     normalized = 'https://' + normalized;
   }
+  normalized = normalized.replace(/\/$/, '');
+  if (!normalized.includes('/', 8)) {
+    normalized = normalized + '/';
+  }
   return normalized;
 };
 
@@ -18,11 +22,15 @@ const getDomain = (url) => {
 
 const isInternal = (link, baseUrl) => {
   try {
-    const baseDomain = new URL(baseUrl).hostname;
-    const linkDomain = new URL(link, baseUrl).hostname;
+    let processedLink = link;
+    if (link.startsWith('//')) {
+      processedLink = 'https:' + link;
+    }
+    const baseDomain = new URL(baseUrl).hostname.replace('www.', '');
+    const linkDomain = new URL(processedLink, baseUrl).hostname.replace('www.', '');
     return baseDomain === linkDomain;
   } catch {
-    return false;
+    return !link.startsWith('http') && !link.startsWith('//');
   }
 };
 
